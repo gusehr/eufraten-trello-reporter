@@ -1,0 +1,35 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+repositories {
+	mavenCentral()
+	jcenter()
+}
+
+dependencies {
+	compile 'org.slf4j:slf4j-api:1.7.18'
+	compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.5'
+	compile 'org.apache.logging.log4j:log4j-core:2.5'
+	compile 'org.apache.poi:poi:3.14'
+	compile 'org.apache.commons:commons-lang3:3.4'
+	compile 'org.apache.httpcomponents:httpclient:4.5.2'
+	compile 'com.julienvey.trello:trello-java-wrapper:0.3.2'
+
+	// Declare the dependency for your favourite test framework you want to use in your tests.
+	// TestNG is also supported by the Gradle Test task. Just change the
+	// testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
+	// 'test.useTestNG()' to your build script.
+	testCompile 'junit:junit:4.12'
+}
+
+jar {
+	baseName = project.name + '-full'
+	manifest {
+		attributes 'Main-Class': 'org.eufraten.trelloreporter.Main'
+	}
+	from {
+		configurations.compile.collect {
+			it.isDirectory() ? it : zipTree(it)
+		}
+	}
+}
