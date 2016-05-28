@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.eufraten.trelloreporter.trello.TrelloBoard;
 
 import com.julienvey.trello.domain.Action;
 import com.julienvey.trello.domain.Argument;
@@ -13,26 +14,30 @@ import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.domain.CheckItem;
 import com.julienvey.trello.domain.CheckList;
 import com.julienvey.trello.domain.Label;
-import com.julienvey.trello.impl.TrelloImpl;
 
 public class OrdemDeServico {
 
 	private String id;
+	private String cardId;
 	private String solicitante;
 	private Date dataAbertura;
 	private String epv;
 	private String prioridade;
 	private String descricao;
 	private List<Item> itens = new ArrayList<>();
+	private String titulo;
 
-	public OrdemDeServico(String id, Card card, TrelloImpl trelloImpl) {
+	public OrdemDeServico(String id, Card card, TrelloBoard trelloBoard) {
 		this.id = id;
+		this.cardId = card.getId();
 		this.descricao = card.getName();
 		this.descricao += "\n";
 		this.descricao += card.getDesc();
+		this.titulo = card.getName();
 
-		List<Action> actions = trelloImpl.getCardActions(card.getId(), new Argument("filter", "createCard"),
+		List<Action> actions = card.getActions(new Argument("filter", "createCard"),
 				new Argument("memberCreator_fields", "fullName"));
+
 		if (actions != null && !actions.isEmpty()) {
 			Action creationAction = actions.get(0);
 			this.dataAbertura = creationAction.getDate();
@@ -47,15 +52,13 @@ public class OrdemDeServico {
 				}
 			}
 		}
-		if (card.getIdChecklists() != null) {
-			for (String checkListId : card.getIdChecklists()) {
-				CheckList checkList = trelloImpl.getCheckList(checkListId);
-				for (CheckItem checkItem : checkList.getCheckItems()) {
-					this.itens.add(new Item(checkItem, checkList));
-				}
+		List<CheckList> checkLists = trelloBoard.checkListsPorCard(card);
+		for (CheckList checkList : checkLists) {
+			for (CheckItem checkItem : checkList.getCheckItems()) {
+				this.itens.add(new Item(checkItem, checkList));
 			}
-			Collections.sort(this.itens);
 		}
+		Collections.sort(this.itens);
 	}
 
 	OrdemDeServico(String id, String solicitante, Date dataAbertura, String epv, String prioridade, String descricao) {
@@ -65,6 +68,7 @@ public class OrdemDeServico {
 		this.epv = epv;
 		this.prioridade = prioridade;
 		this.descricao = descricao;
+		this.cardId = "mockCardId";
 	}
 
 	void addItem(Item item) {
@@ -79,6 +83,10 @@ public class OrdemDeServico {
 
 	public String getId() {
 		return id;
+	}
+
+	public String getCardId() {
+		return cardId;
 	}
 
 	public String getSolicitante() {
@@ -99,6 +107,10 @@ public class OrdemDeServico {
 
 	public String getDescricao() {
 		return descricao;
+	}
+
+	public String getTitulo() {
+		return titulo;
 	}
 
 	public List<Item> getItens() {
@@ -148,4 +160,5 @@ public class OrdemDeServico {
 		}
 
 	}
+
 }

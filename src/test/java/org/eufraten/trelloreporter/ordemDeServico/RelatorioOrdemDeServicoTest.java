@@ -23,12 +23,12 @@ public class RelatorioOrdemDeServicoTest {
 		ordemDeServico.addItem(new Item("EPI", "Luvas", true));
 
 		RelatorioOrdemDeServico relatorioOrdemDeServico = new RelatorioOrdemDeServico(ordemDeServico);
-		String filePath = TEMP_PATH + File.separator + "relatorioTesteComItems.xls";
+		String filePath = relatorioOrdemDeServico.gerarCaminhoDoArquivo(TEMP_PATH);
 
 		File file = new File(filePath);
 		Assert.assertFalse(file.exists());
 
-		relatorioOrdemDeServico.gerarExcel(filePath);
+		relatorioOrdemDeServico.gerarExcel(TEMP_PATH);
 
 		file = new File(filePath);
 		Assert.assertTrue(file.exists());
@@ -37,16 +37,16 @@ public class RelatorioOrdemDeServicoTest {
 
 	@Test
 	public void ordem_de_servico_sem_itens() throws IOException {
-		OrdemDeServico ordemDeServico = new OrdemDeServico("2", "Gustavo Ehrhardt", new Date(), "EPV 3", "P2",
+		OrdemDeServico ordemDeServico = new OrdemDeServico("3", "Gustavo Ehrhardt", new Date(), "EPV 3", "P2",
 				"Trocar a lâmpada da sala de reunião");
 
 		RelatorioOrdemDeServico relatorioOrdemDeServico = new RelatorioOrdemDeServico(ordemDeServico);
-		String filePath = TEMP_PATH + File.separator + "relatorioTesteSemItens.xls";
+		String filePath = relatorioOrdemDeServico.gerarCaminhoDoArquivo(TEMP_PATH);
 
 		File file = new File(filePath);
 		Assert.assertFalse(file.exists());
 
-		relatorioOrdemDeServico.gerarExcel(filePath);
+		relatorioOrdemDeServico.gerarExcel(TEMP_PATH);
 
 		file = new File(filePath);
 		Assert.assertTrue(file.exists());
@@ -59,12 +59,12 @@ public class RelatorioOrdemDeServicoTest {
 				null);
 
 		RelatorioOrdemDeServico relatorioOrdemDeServico = new RelatorioOrdemDeServico(ordemDeServico);
-		String filePath = TEMP_PATH + File.separator + "relatorioTesteComDadosNulo.xls";
+		String filePath = relatorioOrdemDeServico.gerarCaminhoDoArquivo(TEMP_PATH);
 
 		File file = new File(filePath);
 		Assert.assertFalse(file.exists());
 
-		relatorioOrdemDeServico.gerarExcel(filePath);
+		relatorioOrdemDeServico.gerarExcel(TEMP_PATH);
 
 		file = new File(filePath);
 		Assert.assertTrue(file.exists());

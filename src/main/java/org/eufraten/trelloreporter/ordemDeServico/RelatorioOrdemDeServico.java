@@ -1,5 +1,6 @@
 package org.eufraten.trelloreporter.ordemDeServico;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class RelatorioOrdemDeServico {
 		this.ordemDeServico = ordemDeServico;
 	}
 
-	public void gerarExcel(String filePath) throws IOException {
+	public void gerarExcel(String fileBasePath) throws IOException {
 		BaseXLS baseXLS = new BaseXLS("Ordem de serviço de manutenção");
 
 		baseXLS.createSpacerColumn(2);
@@ -42,7 +43,14 @@ public class RelatorioOrdemDeServico {
 
 		gerarAssinaturas(baseXLS, colunaParaAssinatura, colunaParaSegundaAssinatura);
 
-		baseXLS.exportToFileAndFlush(filePath);
+		baseXLS.exportToFileAndFlush(gerarCaminhoDoArquivo(fileBasePath));
+	}
+
+	String gerarCaminhoDoArquivo(String fileBasePath) {
+		String file = "OS - " + ordemDeServico.getId() + " - " + ordemDeServico.getTitulo() + ".xls";
+		file = file.replaceAll("[:\\\\/*?|<>]", "_");
+		String filePath = fileBasePath + File.separator + file;
+		return filePath;
 	}
 
 	private void gerarAssinaturas(BaseXLS baseXLS, ColumnXLS colunaParaAssinatura,
@@ -94,6 +102,10 @@ public class RelatorioOrdemDeServico {
 				rows.add(new DataRow(label, item.getNome()));
 			}
 		}
+	}
+
+	public OrdemDeServico getOrdemDeServico() {
+		return ordemDeServico;
 	}
 
 }
