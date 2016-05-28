@@ -22,7 +22,7 @@ public class RelatorioOrdemDeServico {
 		this.ordemDeServico = ordemDeServico;
 	}
 
-	public void gerarExcel(String fileBasePath) throws IOException {
+	public String gerarExcel(String fileBasePath) throws IOException {
 		BaseXLS baseXLS = new BaseXLS("Ordem de serviço de manutenção");
 
 		baseXLS.createSpacerColumn(2);
@@ -43,7 +43,10 @@ public class RelatorioOrdemDeServico {
 
 		gerarAssinaturas(baseXLS, colunaParaAssinatura, colunaParaSegundaAssinatura);
 
-		baseXLS.exportToFileAndFlush(gerarCaminhoDoArquivo(fileBasePath));
+		String filePath = gerarCaminhoDoArquivo(fileBasePath);
+
+		baseXLS.exportToFileAndFlush(filePath);
+		return filePath;
 	}
 
 	String gerarCaminhoDoArquivo(String fileBasePath) {
