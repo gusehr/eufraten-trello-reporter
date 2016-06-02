@@ -1,5 +1,6 @@
 package org.eufraten.trelloreporter.trello;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,10 +88,9 @@ public class TrelloBoard {
 		return checkLists;
 	}
 
-	// public void adicionarAnexo(String cardId, String filePath) throws IOException {
-	// getTrello().addAttachmentToCard(cardId,
-	// FileUtils.readFileToByteArray(new File(filePath)));
-	// }
+	public void adicionarAnexo(String cardId, String filePath) throws IOException {
+		getTrello().addAttachmentToCard(cardId, new File(filePath));
+	}
 
 	private Trello getTrello() {
 		if (this.trello == null) {

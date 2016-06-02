@@ -62,6 +62,9 @@ public class Main {
 			LOGGER.info("Exportando relatorio em Excel.");
 			String caminhoDoArquivo = relatorioOrdemDeServico.gerarExcel(".");
 			LOGGER.info("Relatorio em Excel gerado.");
+			LOGGER.info("Adicionando arquivo anexo.");
+			service.salvarRelatorio(relatorioOrdemDeServico);
+			LOGGER.info("Arquivo anexado.");
 			caminhoDoArquivo = new File(caminhoDoArquivo).getCanonicalPath();
 			userInterface.write("OS nº " + ordemDeServico.getId() + " gerada com sucesso em\n" + caminhoDoArquivo);
 		} catch (Exception e) {

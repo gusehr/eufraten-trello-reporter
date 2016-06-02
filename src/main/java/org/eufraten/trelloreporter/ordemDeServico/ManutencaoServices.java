@@ -48,9 +48,9 @@ public class ManutencaoServices {
 	}
 
 	public void salvarRelatorio(RelatorioOrdemDeServico relatorioOrdemDeServico) throws IOException {
-		relatorioOrdemDeServico.gerarExcel(".");
-		// TrelloBoard boardManutencao = new TrelloBoard(QUADRO_MANUTENCAO_ID);
-		// boardManutencao.adicionarAnexo(relatorioOrdemDeServico.getOrdemDeServico().getCardId(), filePath);
+		String filePath = relatorioOrdemDeServico.gerarExcel(".");
+		TrelloBoard boardManutencao = new TrelloBoard(QUADRO_MANUTENCAO_ID);
+		boardManutencao.adicionarAnexo(relatorioOrdemDeServico.getOrdemDeServico().getCardId(), filePath);
 	}
 
 }
