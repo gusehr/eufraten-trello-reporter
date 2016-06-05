@@ -17,3 +17,4 @@ src/main/resources/trello.properties
 .project
 .settings/
 build/
+logs/
