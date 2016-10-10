@@ -17,12 +17,12 @@ import com.julienvey.trello.domain.Action;
 import com.julienvey.trello.domain.Argument;
 import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.domain.CheckList;
+import com.julienvey.trello.domain.TList;
 import com.julienvey.trello.impl.TrelloImpl;
 import com.julienvey.trello.impl.http.ApacheHttpClient;
 
 public class TrelloBoard {
 
-	@SuppressWarnings("unused")
 	private String boardId;
 	private String apiKey;
 	private String accessToken;
@@ -97,6 +97,14 @@ public class TrelloBoard {
 			this.trello = new TrelloImpl(this.apiKey, this.accessToken, new ApacheHttpClient());
 		}
 		return this.trello;
+	}
+
+	public List<TList> listas() {
+		return getTrello().getBoardLists(this.boardId);
+	}
+
+	public List<Card> cardsPorLista(String listId) {
+		return getTrello().getListCards(listId);
 	}
 
 }

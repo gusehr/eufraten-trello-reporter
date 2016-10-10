@@ -2,6 +2,7 @@ package org.eufraten.trelloreporter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eufraten.trelloreporter.ordemDeServico.ManutencaoServices;
@@ -23,6 +24,9 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		UI userInterface = new GUI();
 		int opcao;
+
+		ManutencaoServices service = new ManutencaoServices();
+		List<OrdemDeServico> ordensDeServicoValidadas = service.ordensDeServicoValidadas();
 
 		do {
 			// TODO pensar em um menu dinamico
@@ -63,7 +67,18 @@ public class Main {
 			String caminhoDoArquivo = relatorioOrdemDeServico.gerarExcel(".");
 			LOGGER.info("Relatorio em Excel gerado.");
 			LOGGER.info("Adicionando arquivo anexo.");
-			service.salvarRelatorio(relatorioOrdemDeServico);
+			boolean tentarNovamente;
+			do {
+				try {
+					service.salvarRelatorio(relatorioOrdemDeServico);
+					tentarNovamente = false;
+				} catch (Exception ex) {
+					LOGGER.error("Erro ao anexar a OS do endereco {}", ex, cardURL);
+					int opcao = userInterface.readInt("Falha ao anexar a OS", "Tentar novamente?", "1 - Sim",
+							"0 - Nao", "Digite a opcao");
+					tentarNovamente = opcao == 1;
+				}
+			} while (tentarNovamente);
 			LOGGER.info("Arquivo anexado.");
 			caminhoDoArquivo = new File(caminhoDoArquivo).getCanonicalPath();
 			userInterface.write("OS nº " + ordemDeServico.getId() + " gerada com sucesso em\n" + caminhoDoArquivo);

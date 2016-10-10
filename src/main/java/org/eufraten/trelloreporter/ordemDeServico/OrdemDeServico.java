@@ -1,5 +1,10 @@
 package org.eufraten.trelloreporter.ordemDeServico;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -26,9 +31,24 @@ public class OrdemDeServico {
 	private String descricao;
 	private List<Item> itens = new ArrayList<>();
 	private String titulo;
+	private Date dataFechamento;
 
 	public OrdemDeServico(String id, Card card, TrelloBoard trelloBoard) {
+		this(card, trelloBoard);
 		this.id = id;
+	}
+
+	OrdemDeServico(String id, String solicitante, Date dataAbertura, String epv, String prioridade, String descricao) {
+		this.id = id;
+		this.solicitante = solicitante;
+		this.dataAbertura = dataAbertura;
+		this.epv = epv;
+		this.prioridade = prioridade;
+		this.descricao = descricao;
+		this.cardId = "mockCardId";
+	}
+
+	OrdemDeServico(Card card, TrelloBoard trelloBoard) {
 		this.cardId = card.getId();
 		this.descricao = card.getName();
 		this.descricao += "\n";
@@ -59,16 +79,6 @@ public class OrdemDeServico {
 			}
 		}
 		Collections.sort(this.itens);
-	}
-
-	OrdemDeServico(String id, String solicitante, Date dataAbertura, String epv, String prioridade, String descricao) {
-		this.id = id;
-		this.solicitante = solicitante;
-		this.dataAbertura = dataAbertura;
-		this.epv = epv;
-		this.prioridade = prioridade;
-		this.descricao = descricao;
-		this.cardId = "mockCardId";
 	}
 
 	void addItem(Item item) {
@@ -116,6 +126,38 @@ public class OrdemDeServico {
 	public List<Item> getItens() {
 		return itens;
 	}
+
+	public Date getDataFechamento() {
+		return dataFechamento;
+	}
+
+	void setDataFechamento(Date dataFechamento) {
+		this.dataFechamento = dataFechamento;
+	}
+
+	public long calcularLeadTime() {
+		LocalDate inicio = LocalDateTime
+				.ofInstant(Instant.ofEpochMilli(this.dataAbertura.getTime()), ZoneId.systemDefault())
+				.toLocalDate();
+		LocalDate fim;
+		if (this.dataFechamento == null) {
+			fim = LocalDate.now(ZoneId.systemDefault());
+		} else {
+			fim = LocalDateTime
+					.ofInstant(Instant.ofEpochMilli(this.dataFechamento.getTime()), ZoneId.systemDefault())
+					.toLocalDate();
+		}
+
+		return ChronoUnit.DAYS.between(inicio, fim);
+	}
+
+	// Se precisar ignorar fim de semana
+	// static long daysBetween(LocalDate start, LocalDate end, List<DayOfWeek> ignore) {
+	// return Stream.iterate(start, d->d.plusDays(1))
+	// .limit(start.until(end, ChronoUnit.DAYS))
+	// .filter(d->!ignore.contains(d.getDayOfWeek()))
+	// .count();
+	// }
 
 	public static class Item implements Comparable<Item> {
 		private String tipo;
