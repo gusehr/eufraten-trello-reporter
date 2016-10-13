@@ -48,6 +48,6 @@ task stage {
 }
 
 jar {
-	baseName = 'app'
+	baseName = project.name
 }
 
